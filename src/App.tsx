@@ -97,7 +97,7 @@ function App() {
         <button
           onClick={handleCopy}
           className='button bg-blue-500 text-white hover:ring-blue-300' name='copy'
-          title="复制译文到剪贴版"
+          title="复制译文到剪贴板"
         ><FontAwesomeIcon icon={faClipboard} /></button>
         <button
           onClick={handleAlwaysOnTop}

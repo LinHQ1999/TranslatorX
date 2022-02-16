@@ -6,8 +6,8 @@ import { ApiKey, BaiduAPI } from "./api_types"
 import Store from 'electron-store'
 
 export const store = new Store<ApiKey>({defaults: {
-    appID: "20200621000502548",
-    key: "LUPWrTqEiQEeHkbxQXhd"
+    appID: "",
+    key: ""
 }})
 
 export let trans_state = "0"
