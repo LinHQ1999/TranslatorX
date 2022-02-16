@@ -1,0 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .button {
+    @apply mx-1 rounded-sm font-semibold py-1 px-2 text-sm hover:ring-2 transition hover:ring-opacity-30
+  }
+
+  .select {
+    @apply h-7 border-2 text-sm border-slate-400 mx-2 hover:cursor-pointer hover:border-slate-500
+  }
+  .option {
+    @apply hover:bg-gray-300 !important
+  }
+}
