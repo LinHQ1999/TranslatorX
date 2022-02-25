@@ -1,9 +1,9 @@
 import axios from "axios"
 import { MD5 } from "crypto-js"
 import { error } from 'electron-log'
+import Store from 'electron-store'
 import { URL } from "url"
 import { ApiKey, BaiduAPI } from "./api_types"
-import Store from 'electron-store'
 
 export const store = new Store<ApiKey>({defaults: {
     appID: "",
@@ -117,7 +117,7 @@ async function translate(
         if (trans.status == "fulfilled") {
             for (let group of trans.value.trans_result) {
                 // 分段格式保留
-                res += group.dst + "\n"
+                res += group.dst + "\n\n"
             }
         } else {
             error(trans.reason)
