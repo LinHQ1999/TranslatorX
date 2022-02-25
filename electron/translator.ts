@@ -33,7 +33,7 @@ function slice(txt: string, groupSize: number, breakPoint = "."): string[] {
             tmpgroup += chunk + breakPoint
         } else {
             // 提交长句，然后重置临时字符串
-            res.push(tmpgroup.trim())
+            res.push(tmpgroup)
             tmpgroup = chunk + breakPoint
         }
     }
@@ -117,7 +117,7 @@ async function translate(
         if (trans.status == "fulfilled") {
             for (let group of trans.value.trans_result) {
                 // 分段格式保留
-                res += group.dst + "\n\n"
+                res += group.dst + "\n"
             }
         } else {
             error(trans.reason)
