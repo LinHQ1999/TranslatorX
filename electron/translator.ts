@@ -12,7 +12,7 @@ export interface API {
 }
 
 export interface Translator {
-    translate<T extends API>(text: string, from: string, to: string, appid: string, passwd: string, retry: number): Promise<T>
+    translate<T extends API>(text: string, lang: Config, appid: string, passwd: string, retry: number): Promise<T>
 }
 
 export const store = new Store<ApiKey>({
@@ -29,7 +29,7 @@ export let trans_state = "0"
  * @param from 源语言
  * @param to 结果语言 
  */
-async function transBaidu(text: string, from: string, to: string, appid: string, passwd: string, retry = 3): Promise<BaiduAPI> {
+async function transBaidu(text: string, lang:Config, appid: string, passwd: string, retry = 3): Promise<BaiduAPI> {
     if (retry < 0) {
         throw new Error("Maximum retry times!")
     }
@@ -37,8 +37,8 @@ async function transBaidu(text: string, from: string, to: string, appid: string,
         let salt = new Date().getTime()
         let url = new URL("https://fanyi-api.baidu.com/api/trans/vip/translate")
         url.searchParams.set("q", text)
-        url.searchParams.set("from", from)
-        url.searchParams.set("to", to)
+        url.searchParams.set("from", lang.from)
+        url.searchParams.set("to", lang.to)
         url.searchParams.set("appid", appid)
         url.searchParams.set("salt", "" + salt)
         url.searchParams.set("sign", md5(appid + text + salt + passwd))
@@ -46,13 +46,13 @@ async function transBaidu(text: string, from: string, to: string, appid: string,
         // 空值重试
         if (!resp.data.trans_result || resp.data.trans_result.length == 0) {
             await sleep(1100)
-            return transBaidu(text, from, to, appid, passwd, retry - 1)
+            return transBaidu(text, lang, appid, passwd, retry - 1)
         }
         return resp.data
     } catch (err) {
         await sleep(1100)
         error(err, `\n重试中 ${retry - 1}`)
-        return transBaidu(text, from, to, appid, passwd, retry - 1)
+        return transBaidu(text, lang, appid, passwd, retry - 1)
     }
 }
 
@@ -72,11 +72,12 @@ function sleep(ms: number) {
 let working = [], send_count = 0
 
 export async function translate(
-    text: string, from: string, to: string,
+    from: string,
+    lang: Config,
     groupSize = 1800
 ): Promise<string | void> {
 
-    let chunks = slice(text.replace(/\n(?!\n)/g, ""), groupSize)
+    let chunks = slice(from.replaceAll(lang.splitter, ""), groupSize)
     let res = ""
 
     // 尝试丢弃上次的结果
@@ -85,7 +86,7 @@ export async function translate(
     send_count = 0
 
     for (let chunk of chunks) {
-        working.push(transBaidu(chunk, from, to, store.get("appID"), store.get("key"), 3))
+        working.push(transBaidu(chunk, lang, store.get("appID"), store.get("key"), 3))
         send_count++
         // 更新状态变量
         trans_state = ((send_count / chunks.length) * 100).toFixed(1)

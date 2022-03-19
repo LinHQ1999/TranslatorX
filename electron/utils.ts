@@ -13,13 +13,14 @@ function md5(text: string): string {
  * @param breakPoint 分组依据，默认从句子处断开
  * @returns 分块后句子组
  */
-function slice(txt: string, groupSize: number, breakPoint = "."): string[] {
+function slice(txt: string, groupSize: number, breakPoint = ".。"): string[] {
     // 性能提升
     if (txt.length <= groupSize) return [txt]
 
     let res: string[] = []
     let tmpgroup = ""
-    let chunks = txt.split(breakPoint)
+
+    let chunks = txt.split(new RegExp(`[${breakPoint}]`))
 
     for (let chunk of chunks) {
         let wordlen = chunk.length
