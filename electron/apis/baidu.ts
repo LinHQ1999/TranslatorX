@@ -1,13 +1,14 @@
+import {API} from "../translator"
+/**
+ * 等待重构
+*/
 interface BaiduResultGroup {
     src: string
     dst: string
 }
 
-interface BaiduAPI {
-    from: string
-    to: string
+interface BaiduAPI extends API {
     trans_result: BaiduResultGroup[]
-    error_code?: number
     /**
      * 以下字段仅开通了词典、TTS用户可见
      */
@@ -21,4 +22,4 @@ interface ApiKey {
     key: string
 }
 
-export type { BaiduAPI, BaiduResultGroup, ApiKey }
+export type {BaiduAPI, BaiduResultGroup, ApiKey}

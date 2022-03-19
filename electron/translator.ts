@@ -1,54 +1,28 @@
 import axios from "axios"
-import { MD5 } from "crypto-js"
-import { error } from 'electron-log'
+import {error} from 'electron-log'
 import Store from 'electron-store'
-import { URL } from "url"
-import { ApiKey, BaiduAPI } from "./api_types"
+import {URL} from "url"
+import {ApiKey, BaiduAPI} from "./apis/baidu"
+import {md5, slice} from "./utils"
 
-export const store = new Store<ApiKey>({defaults: {
-    appID: "",
-    key: ""
-}})
+export interface API {
+    q: string
+    from: string
+    to: string
+}
+
+export interface Translator {
+    translate<T extends API>(text: string, from: string, to: string, appid: string, passwd: string, retry: number): Promise<T>
+}
+
+export const store = new Store<ApiKey>({
+    defaults: {
+        appID: "",
+        key: ""
+    }
+})
 
 export let trans_state = "0"
-
-/**
- * 将长文本进行分块处理
- * @param txt 原始文本
- * @param groupSize 分块大小
- * @param breakPoint 分组依据，默认从句子处断开
- * @returns 分块后句子组
- */
-function slice(txt: string, groupSize: number, breakPoint = "."): string[] {
-    // 性能提升
-    if (txt.length <= groupSize) return [txt]
-
-    let res: string[] = []
-    let tmpgroup = ""
-    let chunks = txt.split(breakPoint)
-
-    for (let chunk of chunks) {
-        let wordlen = chunk.length
-        if (tmpgroup.length + wordlen <= groupSize) {
-            tmpgroup += chunk + breakPoint
-        } else {
-            // 提交长句，然后重置临时字符串
-            res.push(tmpgroup)
-            tmpgroup = chunk + breakPoint
-        }
-    }
-    // 推入剩下的临时字符串
-    res.push(tmpgroup)
-    return res
-}
-
-/**
- * 生成签名
- */
-function md5(text: string): string {
-    return MD5(text).toString()
-}
-
 /**
  * 
  * @param text 待翻译文本
@@ -94,15 +68,20 @@ function sleep(ms: number) {
     })
 }
 
-async function translate(
+// 状态共享，方便取消
+let working = [], send_count = 0
+
+export async function translate(
     text: string, from: string, to: string,
     groupSize = 1800
-): Promise<string> {
-    let chunks = slice(text, groupSize)
+): Promise<string | void> {
+
+    let chunks = slice(text.replace(/\n(?!\n)/g, ""), groupSize)
     let res = ""
-    let working = []
-    let send_count = 0
-    trans_state = ""
+
+    // 尝试丢弃上次的结果
+    working.length = 0
+    trans_state = "0"
 
     for (let chunk of chunks) {
         working.push(transBaidu(chunk, from, to, store.get("appID"), store.get("key"), 3))
@@ -125,6 +104,4 @@ async function translate(
     }
     return res
 }
-
-export { translate }
 

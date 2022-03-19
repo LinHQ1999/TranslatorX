@@ -1,6 +1,6 @@
-import { clipboard, contextBridge, ipcRenderer } from 'electron';
-import { ApiKey } from './api_types';
-import { store } from './translator';
+import {clipboard, contextBridge, ipcRenderer} from 'electron';
+import {ApiKey} from './apis/baidu';
+import {store} from './translator';
 
 declare global {
   interface Window {
