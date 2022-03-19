@@ -82,6 +82,7 @@ export async function translate(
     // 尝试丢弃上次的结果
     working.length = 0
     trans_state = "0"
+    send_count = 0
 
     for (let chunk of chunks) {
         working.push(transBaidu(chunk, from, to, store.get("appID"), store.get("key"), 3))
