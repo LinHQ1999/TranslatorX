@@ -8,6 +8,7 @@ interface BaiduResultGroup {
 }
 
 interface BaiduAPI extends API {
+    // 以 \n 划分的段落组
     trans_result: BaiduResultGroup[]
     /**
      * 以下字段仅开通了词典、TTS用户可见

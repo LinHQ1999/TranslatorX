@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react"
-import { Link } from "react-router-dom"
+import React, {useEffect, useState} from "react"
+import {Link} from "react-router-dom"
 
 /**
  * 当然也可以通过状态提升实现
  * @returns 
  */
 export function Settings() {
-    let [api, setApi] = useState({ appID: "", key: "" })
+    let [api, setApi] = useState({appID: "", key: ""})
     let [submitted, setSubmitted] = useState(false)
 
     useEffect(() => {
