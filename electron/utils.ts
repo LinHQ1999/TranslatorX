@@ -13,7 +13,7 @@ function md5(text: string): string {
  * @param breakPoint 分组依据，默认从句子处断开
  * @returns 分块后句子组
  */
-function slice(txt: string, groupSize: number, breakPoint = ".。"): string[] {
+function slice(txt: string, groupSize: number, breakPoint:string): string[] {
     // 性能提升
     if (txt.length <= groupSize) return [txt]
 

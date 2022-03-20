@@ -29,7 +29,7 @@ export let trans_state = "0"
  * @param from 源语言
  * @param to 结果语言 
  */
-async function transBaidu(text: string, lang:Config, appid: string, passwd: string, retry = 3): Promise<BaiduAPI> {
+async function transBaidu(text: string, lang: Config, appid: string, passwd: string, retry = 3): Promise<BaiduAPI> {
     if (retry < 0) {
         throw new Error("Maximum retry times!")
     }
@@ -77,7 +77,7 @@ export async function translate(
     groupSize = 1800
 ): Promise<string | void> {
 
-    let chunks = slice(from.replaceAll(lang.splitter, ""), groupSize)
+    let chunks = slice(from.replaceAll("\n", ""), groupSize, lang.splitter)
     let res = ""
 
     // 尝试丢弃上次的结果
