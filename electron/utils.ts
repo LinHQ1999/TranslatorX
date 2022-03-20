@@ -7,6 +7,19 @@ function md5(text: string): string {
 }
 
 /**
+ * 暂停执行
+ * 
+ * @param ms 睡眠时间
+ * @returns 
+ */
+function sleep(ms: number) {
+    return new Promise((res, _) => {
+        setTimeout(res, ms)
+    })
+}
+
+
+/**
  * 将长文本进行分块处理
  * @param txt 原始文本
  * @param groupSize 分块大小
@@ -37,4 +50,4 @@ function slice(txt: string, groupSize: number, breakPoint:string): string[] {
     return res
 }
 
-export {md5, slice}
+export {md5, slice, sleep}

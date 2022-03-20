@@ -3,7 +3,7 @@ import {error} from 'electron-log'
 import Store from 'electron-store'
 import {URL} from "url"
 import {ApiKey, BaiduAPI} from "./apis/baidu"
-import {md5, slice} from "./utils"
+import {md5, slice, sleep} from "./utils"
 
 export interface API {
     q: string
@@ -15,14 +15,14 @@ export interface Translator {
     translate<T extends API>(from: string, lang: Config, appid: string, passwd: string, retry: number): Promise<T>
 }
 
-export const store = new Store<ApiKey>({
+const store = new Store<ApiKey>({
     defaults: {
         appID: "",
         key: ""
     }
 })
 
-export let trans_state = "0"
+let trans_state = "0"
 /**
  * 
  * @param from 待翻译文本
@@ -56,22 +56,10 @@ async function transBaidu(from: string, lang: Config, key:ApiKey, retry = 3): Pr
     }
 }
 
-/**
- * 暂停执行
- * 
- * @param ms 睡眠时间
- * @returns 
- */
-function sleep(ms: number) {
-    return new Promise((res, _) => {
-        setTimeout(res, ms)
-    })
-}
-
 // 状态共享，方便取消
 let working = [], send_count = 0
 
-export async function translate(
+async function translate(
     from: string,
     lang: Config,
     groupSize = 1800
@@ -107,3 +95,4 @@ export async function translate(
     return res
 }
 
+export  {store, trans_state, translate}
