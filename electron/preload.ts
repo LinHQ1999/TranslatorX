@@ -57,7 +57,7 @@ export const api = {
         store.set("appID", apikey.appID)
         store.set("key", apikey.key)
     },
-    getKey: () => {return {appID: store.get("appID"), key: store.get("key")}},
+    getKey: () => store.store,
     resetKey: () => store.clear()
 };
 contextBridge.exposeInMainWorld('Main', api);

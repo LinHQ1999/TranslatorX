@@ -18,9 +18,9 @@ interface BaiduAPI extends API {
     dict?: string
 }
 
-interface ApiKey {
+interface BaiduApiKey {
     appID: string
     key: string
 }
 
-export type {BaiduAPI, BaiduResultGroup, ApiKey}
+export type {BaiduAPI, BaiduResultGroup, BaiduApiKey as ApiKey}
